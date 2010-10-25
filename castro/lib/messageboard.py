@@ -1,9 +1,10 @@
 import os
+import tempfile
 try:
     import json
 except ImportError:
     import simplejson as json
-import tempfile
+
 
 class MessageBoard:
     def __init__(self, filename):
@@ -19,7 +20,7 @@ class MessageBoard:
         file.write(writable_json)
         file.close()
         return None
-    
+
     def read(self):
         file = open(self.filepath,'r')
         readable_json = file.read()
@@ -27,7 +28,8 @@ class MessageBoard:
         try:
             readable = json.loads(readable_json)
         except ValueError:
-            readable = None 
+            readable = None
         return readable
+
 
 recording_should_continue = MessageBoard('recording_should_continue.txt')
