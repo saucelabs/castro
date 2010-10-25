@@ -11,7 +11,7 @@ import lib.messageboard as mb
 from lib.pyvnc2swf import vnc2swf
 
 # Get directory for storing files:
-DATA_DIR = os.environ.get('CASTRO_DATA_DIR', None) or tempfile.gettempdir()
+DATA_DIR = os.environ.get('CASTRO_DATA_DIR', tempfile.gettempdir())
 
 class Castro:
     def __init__(self,
@@ -30,9 +30,9 @@ class Castro:
         self.clipping = clipping
         self.passwd = passwd
         self.port = port
-        
-        # Post-process data: 
-        self.duration = 0        
+
+        # Post-process data:
+        self.duration = 0
         self.tempfilepath = os.path.join(DATA_DIR, 'temp-' + self.filename)
         self.cuefilepath = os.path.join(DATA_DIR, self.filename + "-cuepoints.xml")
 
@@ -99,7 +99,7 @@ class Castro:
            self.tempfilepath))
 
     def calc_duration(self):
-        print "Getting Duration:"  
+        print "Getting Duration:"
         flv_data_raw = os.popen("flvtool2 -P %s" % self.tempfilepath).read()
         flv_data = yaml.load(flv_data_raw)
         self.duration = int(round(flv_data[flv_data.keys()[0]]['duration']))
@@ -144,10 +144,10 @@ class Castro:
 class video:
     def __init__(self, *args, **kwargs):
         self.recorder = Castro(*args, **kwargs)
-    
+
     def __enter__(self):
         self.recorder.start()
-    
+
     def __exit__(self, type, value, traceback):
         self.recorder.stop()
 
