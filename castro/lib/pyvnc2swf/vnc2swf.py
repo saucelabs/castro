@@ -45,19 +45,19 @@ class tkPasswordDialog(Dialog):
     self.prompt = prompt
     Dialog.__init__(self, master, title)
     return
-  
+
   def destroy(self):
     self.entry = None
     Dialog.destroy(self)
     return
-  
+
   def body(self, master):
     w = Tkinter.Label(master, text=self.prompt, justify=Tkinter.LEFT)
     w.grid(row=0, padx=5, sticky=Tkinter.W)
     self.entry = Tkinter.Entry(master, name="entry", show="*")
     self.entry.grid(row=1, padx=5, sticky=Tkinter.W+Tkinter.E)
     return self.entry
-  
+
   def validate(self):
     self.result = self.entry.get()
     return 1
@@ -75,12 +75,12 @@ class tkEntryDialog(Dialog):
     self.pattern = re.compile(pattern)
     Dialog.__init__(self, master, title)
     return
-  
+
   def destroy(self):
     self.entry = None
     Dialog.destroy(self)
     return
-  
+
   def body(self, master):
     w = Tkinter.Label(master, text=self.prompt, justify=Tkinter.LEFT)
     w.grid(row=0, padx=5, sticky=Tkinter.W)
@@ -89,7 +89,7 @@ class tkEntryDialog(Dialog):
     if self.default:
       self.entry.insert(0, self.default)
     return self.entry
-  
+
   def validate(self):
     self.result = self.entry.get()
     if self.pattern and not self.pattern.match(self.result):
@@ -171,7 +171,7 @@ class VNC2SWFWithTk:
 
   # Set up the GUI components.
   def setup_menubar(self):
-    
+
     def option_server():
       x = tkEntryDialog('Server', 'Server? (host:port)', pattern='^([^:/]+(:\d+)?|)$',
                         default='%s:%d' % (self.host, self.port), master=self.root).result
@@ -243,7 +243,7 @@ class VNC2SWFWithTk:
 
   # Change the current status of UI.
   def set_status(self):
-    
+
     def enable_menus(state):
       self.file_menu.entryconfig(0, state=state) # "File->New..."
       self.option_menu.entryconfig(0, state=state) # "Option->Server..."
@@ -257,7 +257,7 @@ class VNC2SWFWithTk:
       self.file_menu.entryconfig(1, state='normal')
     else:
       self.file_menu.entryconfig(1, state='disabled')
-    
+
     s = []
     if not self.recording:
       s.append('Ready (%d frames recorded).' % (self.frames() or 0))
@@ -290,7 +290,7 @@ class VNC2SWFWithTk:
       if not tkMessageBox.askokcancel('New file', 'Discard the current session?'):
         return False
     return True
-  
+
   def file_new(self, force=False):
     if self.recording or (not force and not self.file_new_ask()): return
     ext = dict([ (t,ext) for (_,t,desc,ext) in self.FILE_TYPES ])[self.outtype]
@@ -314,7 +314,7 @@ class VNC2SWFWithTk:
         preferred_encoding=self.preferred_encoding)
     self.set_status()
     return True
-    
+
   # File->SaveAs
   def file_saveas(self):
     if self.recording or not self.frames(): return
@@ -347,7 +347,7 @@ class VNC2SWFWithTk:
           return
       self.root.destroy()
     return
-  
+
   # Do recording.
   def record(self):
     self.client.tk_init(self.root)
@@ -394,7 +394,7 @@ class VNC2SWFWithTk:
 
 ##  vnc2swf - CLI routine
 ##
-def vnc2swf(info, outtype='swf5', host='localhost', port=5900, 
+def vnc2swf(info, outtype='swf5', host='localhost', port=5900,
             preferred_encoding=(0,), subprocess=None, pwdfile=None, vncfile=None,
             debug=0, merge=False, reconnect=0):
   fp = None
@@ -500,7 +500,7 @@ class RecordingThread:
 
 # Subprocess management
 class Subprocess:
-  
+
   def __init__(self, s):
     try:
       import subprocess
@@ -513,12 +513,12 @@ class Subprocess:
     self.args = s.split(' ')
     self.popen = None
     return
-  
+
   def start(self):
     import subprocess
     self.popen = subprocess.Popen(self.args)
     return
-  
+
   def stop(self):
     import signal
     os.kill(self.popen.pid, signal.SIGINT)
@@ -527,7 +527,7 @@ class Subprocess:
 
 
 # main
-# ./vnc2swf.py -S 'arecord -t wav -c 1 -r 22050 out.wav' -n -o out.swf 
+# ./vnc2swf.py -S 'arecord -t wav -c 1 -r 22050 out.wav' -n -o out.swf
 def main(argv):
   import getopt
   def usage():
