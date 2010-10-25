@@ -56,7 +56,7 @@ License & Repository
 
 Castro was created by `Jason Huggins <http://jrandolph.com>`_. It is licensed under
 the GPLv2, since it is a derivative work of pyvnc2swf, which is also
-licensed under the GPLv2. 
+licensed under the GPLv2.
 
 Castro has a `git respository at github.com <http://github.com/hugs/castro>`_.
 
@@ -65,16 +65,16 @@ Castro has a `git respository at github.com <http://github.com/hugs/castro>`_.
 Summary
 -------
 
-Castro is a minor fork of pyvnc2swf, allowing one to use pyvnc2swf as a 
-regular Python library, instead of a Tk GUI application or command line 
-utility. 
+Castro is a minor fork of pyvnc2swf, allowing one to use pyvnc2swf as a
+regular Python library, instead of a Tk GUI application or command line
+utility.
 
-The specific improvement Castro brings to pyvnc2swf is the ability to start 
-and stop recording programmatically via a simple Python API. Castro 
+The specific improvement Castro brings to pyvnc2swf is the ability to start
+and stop recording programmatically via a simple Python API. Castro
 uses a file-based IPC to tell pyvnc2swf when to stop recording.
 
-Ordinarily, pyvnc2swf's command line utility, vnc2swf.py, expects users to 
-stop recording by manually typing "Control-C", sending a KeyboardInterrupt 
+Ordinarily, pyvnc2swf's command line utility, vnc2swf.py, expects users to
+stop recording by manually typing "Control-C", sending a KeyboardInterrupt
 and allowing the process to exit cleanly. On Linux, emulating KeyboardInterrupt
 is simple enough to do by sending a SIGINT signal. But this does not work cross-
 platform, specifically on Windows. And a big reason for using pyvnc2swf is its
@@ -88,17 +88,19 @@ Dependencies
 
 * Pygame - 1.6 or above
 
+* PyYAML - 3.09 or above
+
+  Python < 2.6 dependencies:
+
 * Multiprocessing - 2.6.21 or above
 
 * Simplejson - 2.0.9 or above
 
-* PyYAML - 3.09 or above
+  Non-python dependencies (for cleaning/editing .flv videos):
 
-  Non-python dependences (for cleaning/editing .flv videos):
+* flvtool2 (ruby gem)
 
-* flvtool2 (ruby gem) 
-
-* ffmpeg 
+* ffmpeg
 
 
 ------------
@@ -107,7 +109,7 @@ Changelog:
 * 1.0.4 - Added post-recording processing methods. (Depends on ffmpeg and flvtool2)
 
 * 1.0.3 - Switched from processing library to multiprocessing.
-          Added support for changing recording framerate. 
+          Added support for changing recording framerate.
 
 * 1.0.2 - Made stop() block until the recording process is done
           Added support to use Castro in a with statement (e.g "with video(...):")
@@ -124,7 +126,7 @@ install_requires = [
           'setuptools',
 ]
 
-# Python < 2.5 need some more
+# Python < 2.6 need some more
 if float("%s.%s" % sys.version_info[:2]) < 2.6:
     install_requires.extend([
       'multiprocessing',
