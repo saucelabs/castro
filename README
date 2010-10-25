@@ -3,7 +3,7 @@
 
 Install:
     1) Install and launch a vncserver. (Hint: Google it.)
-    2) $ [sudo] easy_install castro 
+    2) $ [sudo] easy_install castro
     3) There's no step 3!
 
 Test:
@@ -12,27 +12,27 @@ Test:
 Watch:
     Video stored in: <default_temp_dir>/castro-video.swf
     Video player stored in: <default_temp_dir>/castro-video.html
-    
+
     Linux/OSX:
         $ firefox /tmp/castro-video.html
 
     Windows:
-        C:/> firefox.exe ???/castro-video.html     
+        C:/> firefox.exe ???/castro-video.html
 
 Use:
     The Happy Path:
         >>> from castro import Castro
         >>> c = Castro()
         >>> c.start()
-        >>> # Do something awesome! 
+        >>> # Do something awesome!
         >>> c.stop()
-      
+
     Host and display:
         (default is localhost:0)
         >>> c = Castro(host='example.com', display=1)
 
     Storage directory:
-        $ export CASTRO_DATA_DIR=/home/me/screencasts 
+        $ export CASTRO_DATA_DIR=/home/me/screencasts
         $ python
         >>> from castro import Castro
         >>> c = Castro()
@@ -46,7 +46,7 @@ Use:
         >>> c = Castro(passwd = "/home/me/.vnc/passwd")
 
     Specify everything:
-        $ export CASTRO_DATA_DIR=/home/me/screencasts 
+        $ export CASTRO_DATA_DIR=/home/me/screencasts
         $ python
         >>> from castro import Castro
         >>> c = Castro(host     = 'example.com',
