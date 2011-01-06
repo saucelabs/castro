@@ -11,7 +11,7 @@ import lib.messageboard as mb
 from lib.pyvnc2swf import vnc2swf
 
 # Get directory for storing files:
-DATA_DIR = os.environ.get('CASTRO_DATA_DIR', tempfile.gettempdir())
+DATA_DIR = os.environ.get('CASTRO_DATA_DIR') or tempfile.gettempdir()
 
 class Castro:
     def __init__(self,
