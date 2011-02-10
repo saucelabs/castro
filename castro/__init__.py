@@ -19,6 +19,7 @@ class Castro:
                  host     = "localhost",
                  display  = 0,
                  framerate = 12,
+                 freq = 1,
                  clipping = None,
                  port = None,
                  passwd   = os.path.join(os.path.expanduser("~"), ".vnc", "passwd")):
@@ -30,6 +31,7 @@ class Castro:
         self.clipping = clipping
         self.passwd = passwd
         self.port = port
+        self.freq = freq
 
         # Post-process data:
         self.duration = 0
@@ -116,7 +118,7 @@ class Castro:
         cuefile.write ("  <!-- navigation cue points -->\n")
 
         # Write the body
-        for i in range(0,self.duration,1):
+        for i in range(0,self.duration,self.freq):
             name = (datetime(1900,1,1,0,0,0) + timedelta(seconds=i)).strftime('%H:%M:%S')
             cuefile.write ("  <metatag event=\"onCuePoint\">\n")
             cuefile.write ("    <name>%s</name>\n" % name)
