@@ -18,7 +18,7 @@ class Castro:
                  filename = "castro-video.swf",
                  host     = "localhost",
                  display  = 0,
-                 framerate = 12,
+                 framerate = 20,
                  freq = 1,
                  clipping = None,
                  port = None,
@@ -95,7 +95,7 @@ class Castro:
         """
 
         print "Running ffmpeg: creating keyframes"
-        os.system("ffmpeg -y -i %s -g %s -sameq %s" %
+        os.system("ffmpeg -y -i %s -vcodec libx264 -coder 0 -flags -loop -cmp +chroma -partitions -parti8x8-parti4x4-partp8x8-partb8x8 -me_method dia -subq 0 -me_range 16 -g %s -keyint_min 25 -sc_threshold 0 -i_qfactor 0.71 -b_strategy 0 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -bf 0 -refs 1 -directpred 1 -trellis 0 -flags2 -bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree -wpredp 0 -aq_mode 0 %s" %
           (self.filepath,
            self.framerate,
            self.tempfilepath))
