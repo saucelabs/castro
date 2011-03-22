@@ -71,9 +71,15 @@ class Castro:
     def start(self):
         self.recorder.start()
 
-    def stop(self):
+    def flag_for_stop(self):
         mb.recording_should_continue.write(False)
-        self.recorder.join()
+
+    def stop(self):
+        self.flag_for_stop()
+        self.recorder.join(timeout=90)
+        if self.recorder.is_alive():
+            self.recorder.terminate()
+            self.recorder.join()
 
     def restart(self):
         self.stop()
