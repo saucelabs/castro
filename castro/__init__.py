@@ -1,4 +1,5 @@
 import os
+import subprocess
 import tempfile
 from datetime import datetime, timedelta
 from sys import stdout
@@ -110,13 +111,16 @@ class Castro:
         if self.h264:
             cmd = "ffmpeg -y -i %s -vcodec libx264 -coder 0 -flags -loop -cmp +chroma -partitions -parti8x8-parti4x4-partp8x8-partb8x8 -me_method dia -subq 0 -me_range 16 -g %s -keyint_min 25 -sc_threshold 0 -i_qfactor 0.71 -b_strategy 0 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -bf 0 -refs 1 -directpred 1 -trellis 0 -flags2 -bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree -wpredp 0 -aq_mode 0 -crf 30 %s"
 
-        os.system(cmd % (self.filepath,
-                         self.framerate,
-                         self.tempfilepath))
+        subprocess.check_call(cmd % (self.filepath,
+                                     self.framerate,
+                                     self.tempfilepath),
+                              shell=True)
 
     def calc_duration(self):
         print "Getting Duration:"
-        flv_data_raw = os.popen("flvtool2 -P %s" % self.tempfilepath).read()
+        flv_data_raw = subprocess.Popen("flvtool2 -P %s" % self.tempfilepath,
+                                        shell=True,
+                                        stdout=subprocess.PIPE).stdout.read()
         flv_data = yaml.load(flv_data_raw)
         if type(flv_data) != dict:
             raise CastroException("Invalid FLV metadata: %s", flv_data_raw)
@@ -148,10 +152,10 @@ class Castro:
         cuefile.close()
 
     def inject_metadata(self):
-        os.system("flvtool2 -AUt %s %s %s" %
-            (self.cuefilepath,
-             self.tempfilepath,
-             self.filepath))
+        subprocess.check_call("flvtool2 -AUt %s %s %s" %
+                              (self.cuefilepath,
+                               self.tempfilepath,
+                               self.filepath))
 
     def cleanup(self):
         os.remove(self.cuefilepath)
