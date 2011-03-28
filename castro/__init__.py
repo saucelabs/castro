@@ -93,20 +93,19 @@ class Castro:
         self.start()
 
     def process(self):
-        self.keyframe()
+        self.encode()
         self.calc_duration()
         self.cuepoint()
         self.inject_metadata()
         self.cleanup()
 
-    def keyframe(self):
+    def encode(self):
         """
-        Add keyframes - 1 per second (or every 12 frames)
         Note: The output *needs* to have a different name than the original
         The tip for adding the "-g" flag: http://www.infinitecube.com/?p=9
         """
 
-        print "Running ffmpeg: creating keyframes"
+        print "Running ffmpeg: encoding and creating keyframes"
         cmd = "ffmpeg -y -i %s -g %s -sameq %s"
         if self.h264:
             cmd = "ffmpeg -y -i %s -vcodec libx264 -coder 0 -flags -loop -cmp +chroma -partitions -parti8x8-parti4x4-partp8x8-partb8x8 -me_method dia -subq 0 -me_range 16 -g %s -keyint_min 25 -sc_threshold 0 -i_qfactor 0.71 -b_strategy 0 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -bf 0 -refs 1 -directpred 1 -trellis 0 -flags2 -bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree -wpredp 0 -aq_mode 0 -crf 30 %s"
