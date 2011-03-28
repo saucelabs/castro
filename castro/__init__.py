@@ -13,6 +13,9 @@ from lib.pyvnc2swf import vnc2swf
 # Get directory for storing files:
 DATA_DIR = os.environ.get('CASTRO_DATA_DIR') or tempfile.gettempdir()
 
+class CastroException(Exception):
+    pass
+
 class Castro:
     def __init__(self,
                  filename = "castro-video.swf",
@@ -110,6 +113,8 @@ class Castro:
         print "Getting Duration:"
         flv_data_raw = os.popen("flvtool2 -P %s" % self.tempfilepath).read()
         flv_data = yaml.load(flv_data_raw)
+        if type(flv_data) != dict:
+            raise CastroException("Invalid FLV metadata: %s", flv_data_raw)
         self.duration = int(round(flv_data[flv_data.keys()[0]]['duration']))
         print "Duration: %s" % self.duration
 
