@@ -155,8 +155,7 @@ class Castro:
         subprocess.check_call("flvtool2 -AUt %s %s %s" %
                               (self.cuefilepath,
                                self.tempfilepath,
-                               self.filepath),
-                              shell=True)
+                               self.filepath))
 
     def cleanup(self):
         os.remove(self.cuefilepath)
