@@ -25,7 +25,9 @@ class Castro:
                  freq = 1,
                  clipping = None,
                  port = None,
-                 passwd   = os.path.join(os.path.expanduser("~"), ".vnc", "passwd")):
+                 passwd = os.path.join(os.path.expanduser("~"),
+                                       ".vnc", "passwd"),
+                 h264 = False):
         self.filename = filename
         self.filepath = os.path.join(DATA_DIR, self.filename)
         self.host = host
@@ -35,6 +37,7 @@ class Castro:
         self.passwd = passwd
         self.port = port
         self.freq = freq
+        self.h264 = h264
 
         # Post-process data:
         self.duration = 0
@@ -104,10 +107,13 @@ class Castro:
         """
 
         print "Running ffmpeg: creating keyframes"
-        os.system("ffmpeg -y -i %s -vcodec libx264 -coder 0 -flags -loop -cmp +chroma -partitions -parti8x8-parti4x4-partp8x8-partb8x8 -me_method dia -subq 0 -me_range 16 -g %s -keyint_min 25 -sc_threshold 0 -i_qfactor 0.71 -b_strategy 0 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -bf 0 -refs 1 -directpred 1 -trellis 0 -flags2 -bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree -wpredp 0 -aq_mode 0 %s" %
-          (self.filepath,
-           self.framerate,
-           self.tempfilepath))
+        cmd = "ffmpeg -y -i %s -g %s -sameq %s"
+        if self.h264:
+            cmd = "ffmpeg -y -i %s -vcodec libx264 -coder 0 -flags -loop -cmp +chroma -partitions -parti8x8-parti4x4-partp8x8-partb8x8 -me_method dia -subq 0 -me_range 16 -g %s -keyint_min 25 -sc_threshold 0 -i_qfactor 0.71 -b_strategy 0 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -bf 0 -refs 1 -directpred 1 -trellis 0 -flags2 -bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree -wpredp 0 -aq_mode 0 -crf 30 %s"
+
+        os.system(cmd % (self.filepath,
+                         self.framerate,
+                         self.tempfilepath))
 
     def calc_duration(self):
         print "Getting Duration:"
