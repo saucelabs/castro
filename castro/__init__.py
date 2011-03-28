@@ -22,13 +22,13 @@ class Castro:
                  host     = "localhost",
                  display  = 0,
                  framerate = 12,
-                 seconds_per_keyframe = 5,
                  freq = 1,
                  clipping = None,
                  port = None,
                  passwd = os.path.join(os.path.expanduser("~"),
                                        ".vnc", "passwd"),
-                 h264 = False):
+                 h264 = False,
+                 seconds_per_keyframe = 5):
         self.filename = filename
         self.filepath = os.path.join(DATA_DIR, self.filename)
         self.host = host
@@ -39,6 +39,7 @@ class Castro:
         self.port = port
         self.freq = freq
         self.h264 = h264
+        self.seconds_per_keyframe = seconds_per_keyframe
 
         # Post-process data:
         self.duration = 0
