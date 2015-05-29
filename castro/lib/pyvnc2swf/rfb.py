@@ -160,7 +160,7 @@ class RFBProxy:
       if self.pwdcache:
         p = self.pwdcache
       elif self.pwdfile:
-        fp = file(self.pwdfile)
+        fp = open(self.pwdfile, 'rb')
         s = fp.read()
         fp.close()
         p = decrypt_passwd(s)
