@@ -1,5 +1,7 @@
 import os
+import re
 import tempfile
+import logging
 from datetime import datetime, timedelta
 from sys import stdout
 from time import sleep
@@ -10,6 +12,8 @@ import yaml
 
 import lib.messageboard as mb
 from lib.pyvnc2swf import vnc2swf
+
+log = logging.getLogger(__name__)
 
 # Get directory for storing files:
 DATA_DIR = os.environ.get('CASTRO_DATA_DIR') or tempfile.gettempdir()
@@ -95,14 +99,26 @@ class Castro:
         self.init()
         self.start()
 
-    def process(self):
-        self.encode()
+    def process(self, downscale=False):
+        log.info("Starting video processing")
+        self.encode(downscale=downscale)
         self.calc_duration()
         self.cuepoint()
         self.inject_metadata()
         self.cleanup()
 
-    def encode(self):
+    def _get_size(self, video_path):
+        w = h = 0
+        pattern = re.compile(r"Stream.*Video.* (\d+)x(\d+)")
+        out, _ = Popen(['ffmpeg', '-i', video_path],
+                        stdout=PIPE,
+                        stderr=STDOUT).communicate()
+        match = pattern.search(out)
+        if match:
+            w, h = map(int, match.groups()[0:2])
+        return w, h
+
+    def encode(self, downscale=False):
         """
         Note: The output *needs* to have a different name than the original
         The tip for adding the "-g" flag: http://www.infinitecube.com/?p=9
@@ -114,8 +130,23 @@ class Castro:
             scale = "-qscale 0"
         else:
             scale = "-sameq"
+
+        newsize = ""
+        if downscale:
+            DOWNSCALE_WIDTH = 1024
+            w, h = self._get_size(self.filepath)
+            log.info("Downscaling enabled, orig video size %sx%s", w, h)
+            if w and h and w > DOWNSCALE_WIDTH:
+                new_w = DOWNSCALE_WIDTH
+                new_h = int((new_w / float(w)) * h)
+                # it needs to be divisiable by 2
+                if new_h % 2 != 0:
+                    new_h += 1
+                log.info("Size after downscaling %sx%s", new_w, new_h)
+                newsize = "-s %sx%s " % (new_w, new_h)
+
         print "Running ffmpeg: encoding and creating keyframes"
-        cmd = "ffmpeg -y -i %s -g %s " + scale + " %s"
+        cmd = "ffmpeg -y -i %s -g %s " + scale + " %s%s"
         if self.h264:
             cmd = ("ffmpeg -y -i %s -vcodec libx264 -coder 0 -flags -loop"
                    " -cmp +chroma -partitions -parti8x8-parti4x4-partp8x8-partb8x8"
@@ -123,10 +154,11 @@ class Castro:
                    " -sc_threshold 0 -i_qfactor 0.71 -b_strategy 0 -qcomp 0.6"
                    " -qmin 10 -qmax 51 -qdiff 4 -bf 0 -refs 1 -directpred 1 -trellis 0"
                    " -flags2 -bpyramid-mixed_refs-wpred-dct8x8+fastpskip-mbtree -wpredp"
-                   " 0 -aq_mode 0 -crf 30 %s")
+                   " 0 -aq_mode 0 -crf 30 %s%s")
 
         os.system(cmd % (self.filepath,
                          self.framerate * self.seconds_per_keyframe,
+                         newsize,
                          self.tempfilepath))
 
     def calc_duration(self):

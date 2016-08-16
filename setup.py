@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '1.0.9'
+version = '1.0.10'
 long_description='''
 ------------
 Introduction
